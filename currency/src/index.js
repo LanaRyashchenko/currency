@@ -1,17 +1,46 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import './index.css'
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+class MyCurrency extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        items: []
+      };
+    }
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+componentDidMount() {
+  fetch('https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5')
+  .then((response) => response.json())
+.then((res) => {
+    this.setState({
+        items: res
+      });
+});
+}
+
+render() {
+    const { items } = this.state;
+    console.log(items)
+	return (
+        <header>
+            <div className="container">
+        <ul className="currency__list">
+        {Array.from(items).map(item => (
+          <li>
+         {item.base_ccy} {item.ccy}  {item.buy} {item.sale}
+          </li>
+        ))}
+      </ul>
+      </div>
+      </header>
+    );
+}
+}
+ReactDOM.render(
+    <MyCurrency />, document.getElementById('root'),
+)
+
+ 
+
